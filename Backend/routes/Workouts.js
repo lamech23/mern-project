@@ -1,5 +1,4 @@
  const express =require('express')
- const router = express.Router()
 const{
    createWorkout,
    getWorkouts,
@@ -7,7 +6,12 @@ const{
    deleteWorkout ,
    updateWorkout
 }=require('../controllers/WorkoutController')
+const requireAuth =require('../middleware/requireAuth')
  //handle attachment
+ const router = express.Router()
+// what this does it fires the middleware be4 the otherrouters 
+router.use(requireAuth)
+
  // to get all workouts
 router.get('/',  getWorkouts )
  //to get a single workout

@@ -37,7 +37,7 @@ if(!load){
 if(!reps){
     emptyFields.push('reps')
 }
-// this last if chech is to detect if there is anything on one input and the rest are has nothing
+// this last if check is to detect if there is anything on one input and the rest are has nothing
 if(emptyFields.length > 0){
    return  res.status(400).json({error:'All fields must be field', emptyFields})
 }
@@ -45,7 +45,8 @@ if(emptyFields.length > 0){
 
     // adding a document to db
     try{
-    const  workout =  await Workout.create({title ,load ,reps})
+        const user_id = req.user_id
+        const  workout =  await Workout.create({title ,load ,reps ,user_id})
     res.status(200).json(workout)
     }catch(error){
        res.status(400).json({error:error.message})

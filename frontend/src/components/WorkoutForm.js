@@ -1,23 +1,32 @@
 import React, { useState } from 'react'
 import { useWorkoutContext } from '../hooks/useWorkoutContext'
-
+import { useAuthContext } from '../hooks/UseAuthContext'
 const WorkoukForm =()=> {
   const {dispatch}=useWorkoutContext()
-    const[title ,setTitle]=useState('')
-    const[load ,setLoad]=useState('')
-    const[reps ,setReps]=useState('')
-    const[error ,setError]=useState(null)
-    const[emptyFields , setEmptyFields]=useState([])
+  const[title ,setTitle]=useState('')
+  const[load ,setLoad]=useState('')
+  const[reps ,setReps]=useState('')
+  const[error ,setError]=useState(null)
+  const[emptyFields , setEmptyFields]=useState([])
+  const {user}=useAuthContext()
 
-    const handelSubmit =async (e)=>{
+  const handelSubmit =async (e)=>{
         e.preventDefault()
+
+        if(!user){
+          setError('You must be logged in')
+          return
+        }
         const workout = {title ,load ,reps}
 
-        const  response =await fetch('http://localhost:4000/api/workout',{
-            method:'POST',
-            body:JSON.stringify(workout),
-            headers:{'Content-Type':'application/json'}
-        })
+          const response = await fetch('http://localhost:4000/api/workout', {
+            method: 'POST',
+            body: JSON.stringify(workout),
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${user.token}`
+            }
+          })
         //this means after posting we get information back  and that is will be returned in json form
         const json = await response.json()
 //performing an if check if it not okay an error is set and the this error is the error from controllers on create 
@@ -67,7 +76,7 @@ const WorkoukForm =()=> {
 
          />
          <button> Add workout</button>
-         {error && <div className='errors' >{error}</div>}
+         {error && <div className='error' >{error}</div>}
     </form>
   )
 }
